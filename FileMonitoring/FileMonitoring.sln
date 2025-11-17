@@ -3,7 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36623.8 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileMonitoring", "FileMonitoring\FileMonitoring.csproj", "{38480184-A236-46C9-9F1D-33B14690375E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileMonitoring.API", "FileMonitoring\FileMonitoring.API.csproj", "{38480184-A236-46C9-9F1D-33B14690375E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileMonitoring.Tests", "FileMonitoring.Tests\FileMonitoring.Tests.csproj", "{F72DC401-6399-45C3-9B21-5B0AF4833555}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileMonitoring.Domain", "FileMonitoring.Domain\FileMonitoring.Domain.csproj", "{4D5E7EFD-0120-4A54-9E04-69E6ED9DA67C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileMonitoring.Application", "FileMonitoring.Application\FileMonitoring.Application.csproj", "{D5525B15-C692-46D7-8A18-6C1EE5BCAE20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileMonitoring.Infrastructure", "FileMonitoring.Infrastructure\FileMonitoring.Infrastructure.csproj", "{62BE98B6-B4BF-4F89-A421-4D011D5966CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +23,22 @@ Global
 		{38480184-A236-46C9-9F1D-33B14690375E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38480184-A236-46C9-9F1D-33B14690375E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38480184-A236-46C9-9F1D-33B14690375E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F72DC401-6399-45C3-9B21-5B0AF4833555}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F72DC401-6399-45C3-9B21-5B0AF4833555}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F72DC401-6399-45C3-9B21-5B0AF4833555}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F72DC401-6399-45C3-9B21-5B0AF4833555}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D5E7EFD-0120-4A54-9E04-69E6ED9DA67C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D5E7EFD-0120-4A54-9E04-69E6ED9DA67C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D5E7EFD-0120-4A54-9E04-69E6ED9DA67C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D5E7EFD-0120-4A54-9E04-69E6ED9DA67C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5525B15-C692-46D7-8A18-6C1EE5BCAE20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5525B15-C692-46D7-8A18-6C1EE5BCAE20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5525B15-C692-46D7-8A18-6C1EE5BCAE20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5525B15-C692-46D7-8A18-6C1EE5BCAE20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62BE98B6-B4BF-4F89-A421-4D011D5966CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62BE98B6-B4BF-4F89-A421-4D011D5966CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62BE98B6-B4BF-4F89-A421-4D011D5966CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62BE98B6-B4BF-4F89-A421-4D011D5966CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
