@@ -1,7 +1,11 @@
+using FileMonitoring.Application.Interfaces;
+using FileMonitoring.Application.Services;
 using FileMonitoring.Domain.Interfaces;
 using FileMonitoring.Infrastructure.Data;
 using FileMonitoring.Infrastructure.Data.Repositories;
 using FileMonitoring.Infrastructure.FileStorage;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +22,14 @@ builder.Services.AddScoped<ITransacaoArquivoRepository, TransacaoArquivoReposito
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
 
+builder.Services.AddScoped<IParsingService, ParsingService>();
+builder.Services.AddScoped<IArquivoService, ArquivoService>();
+
+builder.Services.AddAutoMapper(typeof(FileMonitoring.Application.Mappings.MappingProfile));
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<FileMonitoring.Application.Validators.ArquivoUploadValidator>();
+
 builder.Services.AddMemoryCache();
 
 builder.Services.AddCors(options =>
@@ -31,6 +43,12 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+}
 
 if (app.Environment.IsDevelopment())
 {
