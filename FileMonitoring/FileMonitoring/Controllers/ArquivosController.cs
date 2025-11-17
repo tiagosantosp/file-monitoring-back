@@ -59,13 +59,6 @@ namespace FileMonitoring.API.Controllers
             return Ok(arquivo);
         }
 
-        [HttpGet("estatisticas")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EstatisticasDto))]
-        public async Task<IActionResult> GetEstatisticas()
-        {
-            var estatisticas = await _arquivoService.ObterEstatisticasAsync();
-            return Ok(estatisticas);
-        }
 
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -81,6 +74,18 @@ namespace FileMonitoring.API.Controllers
             {
                 return NotFound();
             }
+        }
+
+        [HttpDelete("expired")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteExpired()
+        {
+            var count = await _arquivoService.DeletarExpiradosAsync();
+            return Ok(new
+            {
+                mensagem = $"{count} arquivo(s) expirado(s) deletado(s) com sucesso.",
+                quantidade = count
+            });
         }
     }
 }

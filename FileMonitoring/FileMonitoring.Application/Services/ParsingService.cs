@@ -1,4 +1,4 @@
-﻿using FileMonitoring.Application.Interfaces;
+using FileMonitoring.Application.Interfaces;
 using FileMonitoring.Domain.Entities;
 using FileMonitoring.Domain.Enums;
 using System.Globalization;
@@ -15,14 +15,15 @@ public class ParsingService : IParsingService
 
         if (string.IsNullOrWhiteSpace(conteudoTexto))
         {
-            throw new InvalidOperationException("Arquivo está vazio");
+            throw new InvalidOperationException("Arquivo está vazio ou contém apenas espaços em branco.");
         }
 
         var linha = conteudoTexto.Replace("\r\n", "").Replace("\n", "").Replace("\r", "");
 
-        if (!ValidarLayout(linha))
+        var (isValid, errorMessage) = ValidarLayout(linha);
+        if (!isValid)
         {
-            throw new InvalidOperationException("Layout do arquivo é inválido");
+            throw new InvalidOperationException(errorMessage);
         }
 
         var tipoRegistro = linha[0];
@@ -35,37 +36,52 @@ public class ParsingService : IParsingService
         {
             transacoes.Add(ParsearTipo1(linha));
         }
-        else
-        {
-            throw new InvalidOperationException($"Tipo de registro inválido: {tipoRegistro}");
-        }
 
         return transacoes;
     }
 
-    public bool ValidarLayout(string linha)
+    public (bool IsValid, string ErrorMessage) ValidarLayout(string linha)
     {
-        if (string.IsNullOrWhiteSpace(linha))
-            return false;
+        if (string.IsNullOrWhiteSpace(linha)) 
+            return (false, "Layout inválido: a linha do arquivo está vazia.");
 
         var tipoRegistro = linha[0];
 
-        if (tipoRegistro == '0' && linha.Length == 50)
-            return true;
+        if (tipoRegistro == '0')
+        {
+            if (linha.Length != 50) 
+                return (false, $"Layout inválido: tipo '0' (UfCard) deve ter 50 caracteres, mas foram encontrados {linha.Length}.");
+            
+            if (!IsAllDigits(linha.Substring(1, 10))) return (false, "Layout inválido (UfCard): O campo 'Estabelecimento' deve ser numérico.");
+            if (!IsAllDigits(linha.Substring(11, 8))) return (false, "Layout inválido (UfCard): O campo 'DataProcessamento' deve ser numérico e no formato AAAAMMDD.");
+            if (!IsAllDigits(linha.Substring(19, 8))) return (false, "Layout inválido (UfCard): O campo 'PeriodoInicial' deve ser numérico e no formato AAAAMMDD.");
+            if (!IsAllDigits(linha.Substring(27, 8))) return (false, "Layout inválido (UfCard): O campo 'PeriodoFinal' deve ser numérico e no formato AAAAMMDD.");
+            if (!IsAllDigits(linha.Substring(35, 7))) return (false, "Layout inválido (UfCard): O campo 'Sequência' deve ser numérico.");
+            if (!linha.Substring(42, 8).Trim().Equals("UfCard", StringComparison.OrdinalIgnoreCase)) 
+                return (false, "Layout inválido (UfCard): O campo 'Empresa' deve ser 'UfCard'.");
 
-        if (tipoRegistro == '1' && linha.Length == 36)
-            return true;
+            return (true, string.Empty);
+        }
+        
+        if (tipoRegistro == '1')
+        {
+            if (linha.Length != 36) 
+                return (false, $"Layout inválido: tipo '1' (FagammonCard) deve ter 36 caracteres, mas foram encontrados {linha.Length}.");
 
-        return false;
+            if (!IsAllDigits(linha.Substring(1, 8))) return (false, "Layout inválido (FagammonCard): O campo 'DataProcessamento' deve ser numérico e no formato AAAAMMDD.");
+            if (!IsAllDigits(linha.Substring(9, 8))) return (false, "Layout inválido (FagammonCard): O campo 'Estabelecimento' deve ser numérico.");
+            if (!linha.Substring(17, 12).Trim().Equals("FagammonCard", StringComparison.OrdinalIgnoreCase))
+                return (false, "Layout inválido (FagammonCard): O campo 'Empresa' deve ser 'FagammonCard'.");
+            if (!IsAllDigits(linha.Substring(29, 7))) return (false, "Layout inválido (FagammonCard): O campo 'Sequência' deve ser numérico.");
+
+            return (true, string.Empty);
+        }
+
+        return (false, $"Layout inválido: Tipo de registro '{tipoRegistro}' é desconhecido. Os tipos válidos são '0' e '1'.");
     }
 
     private TransacaoArquivo ParsearTipo0(string linha)
     {
-        if (linha.Length != 50)
-        {
-            throw new InvalidOperationException($"Layout tipo 0 deve ter 50 caracteres. Recebido: {linha.Length}");
-        }
-
         return new TransacaoArquivo
         {
             TipoRegistro = TipoRegistro.Tipo0,
@@ -80,11 +96,6 @@ public class ParsingService : IParsingService
 
     private TransacaoArquivo ParsearTipo1(string linha)
     {
-        if (linha.Length != 36)
-        {
-            throw new InvalidOperationException($"Layout tipo 1 deve ter 36 caracteres. Recebido: {linha.Length}");
-        }
-
         return new TransacaoArquivo
         {
             TipoRegistro = TipoRegistro.Tipo1,
@@ -99,11 +110,6 @@ public class ParsingService : IParsingService
 
     private DateTime ParsearData(string data)
     {
-        if (string.IsNullOrWhiteSpace(data) || data.Length != 8)
-        {
-            throw new InvalidOperationException($"Data inválida: {data}");
-        }
-
         if (!DateTime.TryParseExact(data, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var resultado))
         {
             throw new InvalidOperationException($"Formato de data inválido: {data}");
@@ -111,4 +117,6 @@ public class ParsingService : IParsingService
 
         return resultado;
     }
+
+    private bool IsAllDigits(string s) => s.All(char.IsDigit);
 }
