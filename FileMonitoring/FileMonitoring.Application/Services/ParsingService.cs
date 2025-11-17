@@ -92,8 +92,8 @@ public class ParsingService : IParsingService
             Estabelecimento = linha.Substring(9, 8).Trim(),
             Empresa = linha.Substring(17, 12).Trim(),
             Sequencia = linha.Substring(29, 7).Trim(),
-            PeriodoInicial = DateTime.MinValue,
-            PeriodoFinal = DateTime.MinValue
+            PeriodoInicial = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc),
+            PeriodoFinal = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc)
         };
     }
 
@@ -104,7 +104,7 @@ public class ParsingService : IParsingService
             throw new InvalidOperationException($"Data inválida: {data}");
         }
 
-        if (!DateTime.TryParseExact(data, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var resultado))
+        if (!DateTime.TryParseExact(data, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var resultado))
         {
             throw new InvalidOperationException($"Formato de data inválido: {data}");
         }

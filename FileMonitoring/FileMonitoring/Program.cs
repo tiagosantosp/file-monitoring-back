@@ -1,3 +1,4 @@
+using FileMonitoring.API.Middlewares;
 using FileMonitoring.Application.Interfaces;
 using FileMonitoring.Application.Services;
 using FileMonitoring.Domain.Interfaces;
@@ -43,6 +44,8 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+app.UseGlobalExceptionMiddleware();
 
 using (var scope = app.Services.CreateScope())
 {
