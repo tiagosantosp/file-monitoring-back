@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FileMonitoring.Application\FileMonitoring.Application.csproj" />
     <ProjectReference Include="..\FileMonitoring.Domain\FileMonitoring.Domain.csproj" />
+    <ProjectReference Include="..\FileMonitoring\FileMonitoring.API.csproj" />
   </ItemGroup>
 
 </Project>
