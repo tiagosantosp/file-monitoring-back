@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: filemonitoring_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: FileMonitoringDB
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - filemonitoring_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: filemonitoring_api
+    ports:
+      - "5000:80"
+      - "5001:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=FileMonitoringDB;Username=postgres;Password=postgres
+      - FileStorage__BackupPath=/app/Backups
+    volumes:
+      - ./Backups:/app/Backups
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - filemonitoring_network
+
+volumes:
+  postgres_data:
+
+networks:
+  filemonitoring_network:
+    driver: bridge
