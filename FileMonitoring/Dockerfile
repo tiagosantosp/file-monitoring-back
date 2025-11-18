@@ -2,17 +2,22 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
+# Copiar solution
+COPY ["FileMonitoring.sln", "./"]
+
 # Copiar arquivos de projeto e restaurar dependências
-COPY ["FileMonitoring.API/FileMonitoring.API.csproj", "FileMonitoring/"]
+COPY ["FileMonitoring/FileMonitoring.API.csproj", "FileMonitoring/"]
 COPY ["FileMonitoring.Application/FileMonitoring.Application.csproj", "FileMonitoring.Application/"]
 COPY ["FileMonitoring.Domain/FileMonitoring.Domain.csproj", "FileMonitoring.Domain/"]
 COPY ["FileMonitoring.Infrastructure/FileMonitoring.Infrastructure.csproj", "FileMonitoring.Infrastructure/"]
 
-RUN dotnet restore "FileMonitoring.API/FileMonitoring.API.csproj"
+RUN dotnet restore "FileMonitoring/FileMonitoring.API.csproj"
 
-# Copiar todo o código e compilar
+# Copiar todo o código
 COPY . .
-WORKDIR "/src/FileMonitoring.API"
+
+# Build
+WORKDIR "/src/FileMonitoring"
 RUN dotnet build "FileMonitoring.API.csproj" -c Release -o /app/build
 
 # Publish Stage
