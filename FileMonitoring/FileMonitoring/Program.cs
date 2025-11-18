@@ -1,4 +1,4 @@
-using FileMonitoring.API.Middlewares;
+﻿using FileMonitoring.API.Middlewares;
 using FileMonitoring.Application.Interfaces;
 using FileMonitoring.Application.Services;
 using FileMonitoring.Domain.Interfaces;
@@ -47,6 +47,11 @@ var app = builder.Build();
 
 app.UseGlobalExceptionMiddleware();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+}
 
 if (app.Environment.IsDevelopment())
 {
