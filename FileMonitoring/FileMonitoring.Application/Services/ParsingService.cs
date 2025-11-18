@@ -20,6 +20,11 @@ public class ParsingService : IParsingService
 
         var linha = conteudoTexto.Replace("\r\n", "").Replace("\n", "").Replace("\r", "");
 
+        if (linha.Length > 0 && linha[0] == '0' && linha.Length < 50)
+        {
+            linha = linha.PadRight(50, ' '); 
+        }
+
         var (isValid, errorMessage) = ValidarLayout(linha);
         if (!isValid)
         {
