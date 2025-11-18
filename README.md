@@ -372,22 +372,12 @@ git clone <repository-url>
 cd FileMonitoring
 ```
 
-### Passo 2: Subir o PostgreSQL
+### Passo 2: Subir a aplicação (API + BANCO)
 ```bash
-docker-compose up -d postgres
+docker-compose up -d --build
 ```
 
-### Passo 3: Aplicar Migrations
-```bash
-dotnet ef database update --project FileMonitoring.Infrastructure --startup-project FileMonitoring.API
-```
-
-### Passo 4: Executar a API
-```bash
-dotnet run --project FileMonitoring.API
-```
-
-### Passo 5: Acessar Swagger
+### Passo 3: Acessar Swagger
 ```
 https://localhost:5000/swagger
 ```
@@ -396,32 +386,6 @@ https://localhost:5000/swagger
 
 ## 🐳 Docker Compose
 
-### docker-compose.yml
-```yaml
-version: '3.8'
-
-services:
-  postgres:
-    image: postgres:15-alpine
-    container_name: filemonitoring_db
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: FileMonitoringDB
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - filemonitoring_network
-
-volumes:
-  postgres_data:
-
-networks:
-  filemonitoring_network:
-    driver: bridge
-```
 
 ### Comandos Úteis
 ```bash
